@@ -11,7 +11,7 @@ export abstract class Asset<T> {
 export interface Sprite {
   width: number,
   height: number,
-  data: Array<number>,
+  pixels: Array<number>,
 }
 
 export class SpriteAsset extends Asset<Sprite> {
@@ -45,10 +45,10 @@ export class SpriteAsset extends Asset<Sprite> {
     const sprite = {
       width: imageData.width,
       height: imageData.height,
-      data: Array<number>()
+      pixels: Array<number>()
     };
     for (let i = 0; i < imageData.data.length; i += 4) {
-      sprite.data[this.calcIndex(i, sprite)] = this.getColor(imageData, i);
+      sprite.pixels[this.calcIndex(i, sprite)] = this.getColor(imageData, i);
     }
     return sprite;
   }
@@ -84,7 +84,7 @@ export class SpriteAsset extends Asset<Sprite> {
 }
 
 export interface SpriteMap {
-  data: Array<Sprite>,
+  sprites: Array<Sprite>,
 }
 
 export class SpriteMapAsset extends Asset<SpriteMap> {
@@ -120,20 +120,20 @@ export class SpriteMapAsset extends Asset<SpriteMap> {
 
   private createMap(imageData: ImageData) {
     const spriteMap = {
-      data: Array<Sprite>()
+      sprites: Array<Sprite>()
     };
     const imageDataSpriteSize = this.spriteWidth * this.spriteHeight * 4;
     for(let spriteIndex = 0; spriteIndex < this.spritesNumber; spriteIndex++) {
       const sprite = {
         width: this.spriteWidth,
         height: this.spriteHeight,
-        data: Array<number>()
+        pixels: Array<number>()
       };
       const start = spriteIndex * imageDataSpriteSize;
       for (let i = start; i < start + imageDataSpriteSize; i += 4) {
-        sprite.data[SpriteMapAsset.calcIndex(i - start, sprite)] = SpriteMapAsset.getColor(imageData, i);
+        sprite.pixels[SpriteMapAsset.calcIndex(i - start, sprite)] = SpriteMapAsset.getColor(imageData, i);
       }
-      spriteMap.data.push(sprite);
+      spriteMap.sprites.push(sprite);
     }
     return spriteMap;
   }
