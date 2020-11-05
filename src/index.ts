@@ -1,4 +1,4 @@
-import {OrgbColor} from "core";
+import {OrgbColor, Sprite, SpriteMap} from "core";
 
 export abstract class Asset<T> {
   isLoading (): boolean {
@@ -6,12 +6,6 @@ export abstract class Asset<T> {
   }
   data?: T;
   abstract load: () => void;
-}
-
-export interface Sprite {
-  width: number,
-  height: number,
-  pixels: Array<number>,
 }
 
 export class SpriteAsset extends Asset<Sprite> {
@@ -81,10 +75,6 @@ export class SpriteAsset extends Asset<Sprite> {
     canvas.height = img.height;
     return canvas;
   }
-}
-
-export interface SpriteMap {
-  sprites: Array<Sprite>,
 }
 
 export class SpriteMapAsset extends Asset<SpriteMap> {
