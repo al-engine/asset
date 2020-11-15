@@ -168,7 +168,7 @@ export class PackAsset<T extends PackType> extends Asset<T> {
   }
   public isLoading() {
     for(const asset in this.data) {
-      if (this.data.hasOwnProperty(asset) && this.data[asset].isLoading) {
+      if (this.data.hasOwnProperty(asset) && this.data[asset].isLoading()) {
         return true;
       }
     }
