@@ -1,7 +1,7 @@
-import {OrgbColor, Sprite, SpriteMap} from "core";
+import { OrgbColor, Sprite, SpriteMap } from '@al-engine/core';
 
 export abstract class Asset<T> {
-  isLoading (): boolean {
+  isLoading(): boolean {
     return false;
   }
   data?: T;
@@ -13,7 +13,7 @@ export class SpriteAsset extends Asset<Sprite> {
   public isLoading() {
     return this._isLoading;
   }
-  constructor (public src: string) {
+  constructor(public src: string) {
     super();
     this._isLoading = false;
   }
@@ -22,7 +22,7 @@ export class SpriteAsset extends Asset<Sprite> {
     this._isLoading = true;
     const image = new Image();
     const sprite = this;
-    image.onload = function () {
+    image.onload = function() {
       sprite._isLoading = false;
       sprite.data = sprite.constructSprite(this as HTMLImageElement);
     };
@@ -39,7 +39,7 @@ export class SpriteAsset extends Asset<Sprite> {
     const sprite = {
       width: imageData.width,
       height: imageData.height,
-      pixels: Array<number>()
+      pixels: Array<number>(),
     };
     for (let i = 0; i < imageData.data.length; i += 4) {
       sprite.pixels[this.calcIndex(i, sprite)] = this.getColor(imageData, i);
@@ -63,14 +63,17 @@ export class SpriteAsset extends Asset<Sprite> {
     return (sprite.height - 1 - row) * sprite.width + col;
   }
 
-  private static createImageData(canvas: HTMLCanvasElement, img: HTMLImageElement) {
-    let context = canvas.getContext("2d");
+  private static createImageData(
+    canvas: HTMLCanvasElement,
+    img: HTMLImageElement
+  ) {
+    let context = canvas.getContext('2d');
     context!.drawImage(img, 0, 0);
     return context!.getImageData(0, 0, img.width, img.height);
   }
 
   private static createCanvas(img: HTMLImageElement) {
-    const canvas = document.createElement("canvas");
+    const canvas = document.createElement('canvas');
     canvas.width = img.width;
     canvas.height = img.height;
     return canvas;
@@ -84,7 +87,7 @@ export class SpriteMapAsset extends Asset<SpriteMap> {
   public isLoading() {
     return this._isLoading;
   }
-  constructor (public src: string, public spritesNumber: number) {
+  constructor(public src: string, public spritesNumber: number) {
     super();
     this._isLoading = false;
   }
@@ -93,7 +96,7 @@ export class SpriteMapAsset extends Asset<SpriteMap> {
     this._isLoading = true;
     const image = new Image();
     const spriteMap = this;
-    image.onload = function () {
+    image.onload = function() {
       spriteMap._isLoading = false;
       spriteMap.data = spriteMap.constructMap(this as HTMLImageElement);
     };
@@ -110,18 +113,20 @@ export class SpriteMapAsset extends Asset<SpriteMap> {
 
   private createMap(imageData: ImageData) {
     const spriteMap = {
-      sprites: Array<Sprite>()
+      sprites: Array<Sprite>(),
     };
     const imageDataSpriteSize = this.spriteWidth * this.spriteHeight * 4;
-    for(let spriteIndex = 0; spriteIndex < this.spritesNumber; spriteIndex++) {
+    for (let spriteIndex = 0; spriteIndex < this.spritesNumber; spriteIndex++) {
       const sprite = {
         width: this.spriteWidth,
         height: this.spriteHeight,
-        pixels: Array<number>()
+        pixels: Array<number>(),
       };
       const start = spriteIndex * imageDataSpriteSize;
       for (let i = start; i < start + imageDataSpriteSize; i += 4) {
-        sprite.pixels[SpriteMapAsset.calcIndex(i - start, sprite)] = SpriteMapAsset.getColor(imageData, i);
+        sprite.pixels[
+          SpriteMapAsset.calcIndex(i - start, sprite)
+        ] = SpriteMapAsset.getColor(imageData, i);
       }
       spriteMap.sprites.push(sprite);
     }
@@ -144,14 +149,17 @@ export class SpriteMapAsset extends Asset<SpriteMap> {
     return (sprite.height - 1 - row) * sprite.width + col;
   }
 
-  private static createImageData(canvas: HTMLCanvasElement, img: HTMLImageElement) {
-    let context = canvas.getContext("2d");
+  private static createImageData(
+    canvas: HTMLCanvasElement,
+    img: HTMLImageElement
+  ) {
+    let context = canvas.getContext('2d');
     context!.drawImage(img, 0, 0);
     return context!.getImageData(0, 0, img.width, img.height);
   }
 
   private static createCanvas(img: HTMLImageElement) {
-    const canvas = document.createElement("canvas");
+    const canvas = document.createElement('canvas');
     canvas.width = img.width;
     canvas.height = img.height;
     return canvas;
@@ -159,7 +167,7 @@ export class SpriteMapAsset extends Asset<SpriteMap> {
 }
 
 interface PackType {
-  [index: string]: Asset<any>
+  [index: string]: Asset<any>;
 }
 
 export class PackAsset<T extends PackType> extends Asset<T> {
@@ -167,7 +175,7 @@ export class PackAsset<T extends PackType> extends Asset<T> {
     super();
   }
   public isLoading() {
-    for(const asset in this.data) {
+    for (const asset in this.data) {
       if (this.data.hasOwnProperty(asset) && this.data[asset].isLoading()) {
         return true;
       }
@@ -175,10 +183,10 @@ export class PackAsset<T extends PackType> extends Asset<T> {
     return false;
   }
   load = () => {
-    for(const asset in this.data) {
+    for (const asset in this.data) {
       if (this.data.hasOwnProperty(asset)) {
         this.data[asset].load();
       }
     }
-  }
+  };
 }
